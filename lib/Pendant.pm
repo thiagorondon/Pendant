@@ -34,7 +34,8 @@ sub error_404 { [ 404, [ 'Content-type', 'text/html' ], ['Not Found'] ] }
 
 sub get_dir {
   my ( $self, $dir ) = @_;
-  my $tree = $self->repo->master->tree;
+  my $tree = $self->find_tree("/$dir")
+    or return $self->error_404;
   return [
     200,
     [ 'Content-type', 'text/html' ],
@@ -64,23 +65,44 @@ sub get_file {
   my ( $self, $file ) = @_;
   for my $ext ( $self->handlers ) {
     my $fname = "$file$ext->[0]";
-#    warn $fname;
-    my $entry = $self->find_entry($fname) or next;
+
+    #    warn $fname;
+    my $blob = $self->find_blob("/$fname") or next;
     return [
       200,
       [ 'Content-type', 'text/html' ],
-      [ $ext->[1]->( $entry->object->content ) ]
+      [ $ext->[1]->( $blob->content ) ]
     ];
   }
   return $self->error_404($file);
 }
 
-sub find_entry {
-  my ( $self, $name ) = @_;
-  my $tree = $self->repo->master->tree;
+sub find_blob {
+  my ( $self, $name, $tree ) = @_;
+  $tree ||= $self->repo->master->tree;
+  my ( $parent, $rest ) = $name =~ m{(.*)/([^/]+)$}
+    or return;
+  $parent ||= '/';
+  my $p_tree = $self->find_tree( $parent, $tree )
+    or return;
   my ($entry) =
-    grep { $_->filename eq $name } $tree->directory_entries;
-  return $entry;
+    grep { $_->filename eq $rest } $p_tree->directory_entries;
+  return unless $entry;
+  return $entry->object;
+}
+
+sub find_tree {
+  my ( $self, $name, $tree ) = @_;
+  $tree ||= $self->repo->master->tree;
+#  warn "looking for $name";
+  my ( $parent, $rest ) = $name =~ m{/([^/]*)(/.*)?} or return;
+  return $tree unless $parent;
+  my ($entry) =
+    grep { ( $_->filename eq $parent ) and $_->object->kind eq 'tree' }
+    $tree->directory_entries;
+  return unless $entry;
+  return $self->find_tree( $rest, $entry->object ) if $rest;
+  return $entry->object;
 }
 
 sub render {
