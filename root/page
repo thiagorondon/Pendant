@@ -1,5 +1,0 @@
-    <div class="wrapper">
-      <section>
-        [% rendered_content %]	
-      </section>
-    </div>	

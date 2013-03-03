@@ -1,38 +1,28 @@
 package Plack::Middleware::Pendant::OrgMode;
 use warnings;
 use strict;
+use utf8;
 
-use parent qw(Plack::Middleware);
+use parent qw(Pendant::Middleware);
 
-use Plack::Request;
-use Plack::Util::Accessor qw(renderer);
-use Path::Class;
-use Cwd;
-use Org::To::HTML qw(org_to_html);
+use Org::Document;
+use Org::To::HTML;
 
 sub file_extension {'.org'}
 
-sub call {
-  my ( $self, $env ) = @_;
-  my $ext = $self->file_extension;
-  if ( my $fname = $self->get_file_name( $env->{PATH_INFO}, $ext ) ) {
-    my $req = Plack::Request->new($env);
-    my $res = $req->new_response(200);
-    $res->headers( [ 'Content-type' => 'text/html' ] );
-    $res->body( org_to_html( source_file => $fname )->[2] );
-    return $res->finalize;
-  }
-
-  return $self->app->($env);
-}
-
-sub path { Path::Class::dir( Cwd::cwd() ) }
-
-sub get_file_name {
-  my ( $self, $name, $ext ) = @_;
-  my $file = $self->path->file( $name . $ext );
-  return unless -f $file;
-  return $file;
+sub handle_file {
+  my ( $self, $file, $res, $env ) = @_;
+  open( my ($fh), '<:encoding(UTF-8)', $file )
+    or die "Couldn't open $file: $!";
+  local $/;
+  my $string = <$fh>;
+  my $oth    = Org::To::HTML->new( naked => 1 );
+  my $doc    = Org::Document->new( from_string => $string );
+  my ($headline) = grep { UNIVERSAL::isa( $_, 'Org::Element::Headline' ) }
+    @{ $doc->children };
+  $env->{'pendant.doc'}{title} = $headline->title->text;
+  warn 'org';
+  $res->body( $oth->export($doc) );
 }
 
 1;
