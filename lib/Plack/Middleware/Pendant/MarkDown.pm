@@ -10,7 +10,7 @@ sub file_extension {'.md'}
 
 sub handle_file {
   my ( $self, $file, $res ) = @_;
-  $res->body( markdown( $file->slurp ) );
+  $res->body( markdown( scalar $file->slurp ) );
 }
 
 1;

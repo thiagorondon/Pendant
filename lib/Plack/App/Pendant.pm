@@ -50,7 +50,10 @@ sub prepare_app {
 
   my $app = $builder->wrap(
     Pendant::App::Directory->new( root => $root, trim => \@extensions ) );
+
   $self->_app($app);
+
+#  $self->_app(sub { [200, ['Content-type' => 'text/plain'], ['foo bar']] });
 }
 
 sub call {
@@ -67,8 +70,9 @@ sub render_template {
     my $content = $res->[2][0];
     my $vars = $env->{'pendant.doc'} || {};
     my $rendered;
-    $self->_tt->process( 'page', { %$vars, content => $content },
-      \$rendered );
+    my $tt = $self->_tt;
+    $tt->process( 'page', { %$vars, content => $content },
+      \$rendered ) or die $tt->error;
     $res->[2][0] = $rendered;
     return $res;
   }
