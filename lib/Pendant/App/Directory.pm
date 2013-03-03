@@ -53,7 +53,7 @@ sub serve_path {
         push @children, {ent => $ent, link => $link};
     }
 
-    for my $basename (sort { $a cmp $b } @children) {
+    for my $basename (sort { $b cmp $a } @children) {
         my $file = "$dir/$basename->{ent}";
         my $url = $dir_url . $basename->{link};
 
