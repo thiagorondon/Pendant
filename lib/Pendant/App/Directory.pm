@@ -27,6 +27,7 @@ sub serve_path {
     if (-f $dir) {
         return $self->SUPER::serve_path($env, $dir, $fullpath);
     }
+    $dir =~ s{/\.?$}{};
 
     $dir =~ s{/\.?$}{};
 
