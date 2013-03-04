@@ -71,7 +71,9 @@ sub render_template {
     my $vars = $env->{'pendant.doc'} || {};
     my $rendered;
     my $tt = $self->_tt;
-    $tt->process( 'page', { %$vars, content => $content },
+    my $request;
+    my $r_builder = sub { $request ||= Plack::Request->new($env) };
+    $tt->process( 'page', { %$vars, content => $content, request => $r_builder },
       \$rendered ) or die $tt->error;
     $res->[2][0] = $rendered;
     return $res;
