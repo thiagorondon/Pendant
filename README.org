@@ -1,12 +1,15 @@
-
 * Synopsis
 Pendant is a git/plack-based wiki
 * Running
 
 #+begin_src sh
-dzil authordeps | cpanm
-dzil listdeps | cpanm
-plackup -Ilib
+
+    dzil authordeps | cpanm
+
+    dzil listdeps | cpanm
+
+    plackup -Ilib
+
 #+end_src
 
 Visit http://localhost:5000/README
