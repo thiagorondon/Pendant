@@ -8,7 +8,7 @@ use parent qw(Plack::Component);
 use Pendant::App::Directory;
 use Plack::Util::Accessor qw(formats root _app _tt);
 use Plack::Builder;
-use Plack::Response;
+use Plack::Response 1.0016;
 use String::TT;
 use Cwd         ();
 use Path::Class ();
