@@ -12,4 +12,4 @@ Pendant is a git/plack-based wiki
 
 #+end_src
 
-Visit http://localhost:5000/README
+Visit [[http://localhost:5000/README]]

@@ -7,6 +7,7 @@ use Try::Tiny;
 use parent qw(Plack::Component);
 use Pendant::App::Directory;
 use Plack::Util::Accessor qw(formats root _app _tt);
+use Plack::Builder;
 use Plack::Response;
 use String::TT;
 use Cwd         ();

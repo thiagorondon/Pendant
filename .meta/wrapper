@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>[% title | html_entity %]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href=".assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href=".assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href=".assets/css/bootswatch.css" rel="stylesheet">
+    <link href=".assets/css/custom.css" rel="stylesheet">
+
+  </head>
+
+  <body class="preview" id="top" data-spy="scroll" data-target=".subnav" data-offset="80">
+    <script src="../js/bsa.js"></script>
+
+
+  <!-- Navbar
+    ================================================== -->
+ <div class="navbar navbar-fixed-top">
+   <div class="navbar-inner">
+     <div class="container">
+       <a class="brand" href="../">Pendant</a>
+     </div>
+   </div>
+ </div>
+<div class="container">
+
+      [% content %]
+
+     <!-- Footer
+      ================================================== -->
+      <hr>
+
+      <footer id="footer">
+        <img src="http://www.perlfoundation.org//data/workspaces/perlfoundation/attachments/perl_trademark:20100824100117-0-22465/files/powered_by_perl-135px.png">
+        <p class="pull-right"><a href="#top">Back to top</a></p>
+      </footer>
+
+    </div><!-- /container -->
+  </body>
+</html>
