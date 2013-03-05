@@ -51,10 +51,12 @@ sub serve_path {
     while (defined(my $ent = $dh->read)) {
         next if $ent eq '.' or $ent eq '..' or $ent =~ /^\./;
         (my $link = $ent) =~ s/$trim_re//;
-        push @children, {ent => $ent, link => $link};
+        (my $link_sort = $link) =~ s/^0*//;
+        push @children, {ent => $ent, link => $link, link_sort => $link_sort};
     }
 
-    for my $basename (sort { $b cmp $a } @children) {
+    no warnings 'numeric';
+    for my $basename (sort { $a->{link_sort} <=> $b->{link_sort} or $a->{link_sort} cmp $b->{link_sort} } @children) {
         my $file = "$dir/$basename->{ent}";
         my $url = $dir_url . $basename->{link};
 
